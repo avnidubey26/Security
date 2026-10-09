@@ -1,0 +1,25 @@
+from enum import StrEnum
+
+
+class IncidentStatus(StrEnum):
+    OPEN = "OPEN"
+    CONTAINED = "CONTAINED"
+    RESOLVED = "RESOLVED"
+    CLOSED = "CLOSED"
+    FALSE_POSITIVE = "FALSE_POSITIVE"
+
+
+class IncidentSeverity(StrEnum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"
+
+
+INCIDENT_TRANSITIONS = {
+    "OPEN": {"OPEN", "CONTAINED", "FALSE_POSITIVE"},
+    "CONTAINED": {"CONTAINED", "RESOLVED", "FALSE_POSITIVE"},
+    "RESOLVED": {"RESOLVED", "CLOSED"},
+    "CLOSED": {"CLOSED"},
+    "FALSE_POSITIVE": {"FALSE_POSITIVE", "CLOSED"},
+}

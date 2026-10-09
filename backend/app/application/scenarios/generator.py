@@ -1,0 +1,4 @@
+from app.application.scenarios.generators import AuthBruteForceCommandGenerator
+
+
+BruteForceScenarioGenerator = AuthBruteForceCommandGenerator

@@ -17,6 +17,17 @@ class ScenarioRepository:
     def get_run(self, run_id: UUID) -> ScenarioRunModel | None:
         return self.db.get(ScenarioRunModel, run_id)
 
+    
+    def list_runs(self) -> list[ScenarioRunModel]:
+        return list(
+            self.db.scalars(
+                select(ScenarioRunModel).order_by(
+                    ScenarioRunModel.started_at.desc()
+                )
+            )
+        )
+
+
     def add_run(self, run: ScenarioRunModel) -> ScenarioRunModel:
         self.db.add(run)
         return run

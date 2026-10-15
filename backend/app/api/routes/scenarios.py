@@ -58,6 +58,14 @@ def list_scenarios(db: Session = Depends(get_db)):
     return {"data": [ScenarioResponse.model_validate(item) for item in ScenarioService(db).list_scenarios()]}
 
 
+@router.get("/runs", response_model=dict)
+def list_scenario_runs(db: Session = Depends(get_db)):
+    runs = ScenarioService(db).list_runs()
+    return {
+        "data": [ScenarioRunResponse.model_validate(run) for run in runs]
+    }
+
+
 @router.get("/{scenario_id}", response_model=dict)
 def get_scenario(scenario_id: UUID, db: Session = Depends(get_db)):
     try:

@@ -28,6 +28,11 @@ class ScenarioService:
     def list_scenarios(self):
         return self.scenarios.list_active()
 
+    
+    def list_runs(self):
+        return self.scenarios.list_runs()
+
+
     def get_scenario(self, scenario_id: UUID):
         scenario = self.scenarios.get(scenario_id)
         if scenario is None or not scenario.is_active:

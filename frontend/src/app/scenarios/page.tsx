@@ -28,18 +28,18 @@ import type { Scenario, ScenarioRun } from "@/types/api";
 type ScenarioListResponse =
   | Scenario[]
   | {
-      items?: Scenario[];
-      data?: Scenario[];
-      total?: number;
-    };
+    items?: Scenario[];
+    data?: Scenario[];
+    total?: number;
+  };
 
 type RunListResponse =
   | ScenarioRun[]
   | {
-      items?: ScenarioRun[];
-      data?: ScenarioRun[];
-      total?: number;
-    };
+    items?: ScenarioRun[];
+    data?: ScenarioRun[];
+    total?: number;
+  };
 
 type RunParameters = Record<string, unknown>;
 
@@ -273,8 +273,8 @@ export default function ScenariosPage() {
     () =>
       selectedScenario
         ? schemaKeys(
-            selectedScenario.parameter_schema,
-          )
+          selectedScenario.parameter_schema,
+        )
         : [],
     [selectedScenario],
   );
@@ -327,16 +327,22 @@ export default function ScenariosPage() {
     setRunMessage(null);
 
     try {
-      const response = await api.post<ScenarioRun>(
+
+      const response = await api.post<
+        ScenarioRun | { data: ScenarioRun }
+      >(
         `/scenarios/${selectedScenario.id}/runs`,
         {
           parameters,
         },
       );
 
+      const run = "data" in response ? response.data : response;
+
       setRunMessage(
-        `Run ${shortId(response.id)} created with status ${response.status}.`,
+        `Run ${shortId(run.id)} created with status ${run.status}.`,
       );
+
 
       await loadRuns();
     } catch (err) {
@@ -614,26 +620,25 @@ export default function ScenariosPage() {
                         {scenario.allowed_platforms
                           ?.length
                           ? scenario.allowed_platforms.map(
-                              (platform) => (
-                                <span
-                                  className="badge badge-info"
-                                  key={platform}
-                                >
-                                  {platform}
-                                </span>
-                              ),
-                            )
+                            (platform) => (
+                              <span
+                                className="badge badge-info"
+                                key={platform}
+                              >
+                                {platform}
+                              </span>
+                            ),
+                          )
                           : "-"}
                       </div>
                     </td>
 
                     <td>
                       <span
-                        className={`badge ${
-                          scenario.is_active
+                        className={`badge ${scenario.is_active
                             ? "badge-success"
                             : "badge-info"
-                        }`}
+                          }`}
                       >
                         {scenario.is_active ? (
                           <CheckCircle2 size={13} />
@@ -738,7 +743,7 @@ export default function ScenariosPage() {
                           )}`}
                         >
                           {run.status ===
-                          "COMPLETED" ? (
+                            "COMPLETED" ? (
                             <CheckCircle2 size={13} />
                           ) : run.status ===
                             "FAILED" ? (
@@ -1009,7 +1014,7 @@ export default function ScenariosPage() {
 
               <form onSubmit={handleRun}>
                 {selectedParameterKeys.length >
-                0 ? (
+                  0 ? (
                   <div
                     style={{
                       display: "grid",

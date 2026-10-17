@@ -58,10 +58,6 @@ export function Topbar({ onMenuClick }: TopbarProps) {
       </div>
 
       <div className="topbar-right">
-        <div className="system-status">
-          <span className="status-indicator" />
-          <span>API Online</span>
-        </div>
 
         <button
           type="button"

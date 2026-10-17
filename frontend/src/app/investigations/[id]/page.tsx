@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -36,10 +36,10 @@ import type {
 type ListResponse<T> =
   | T[]
   | {
-      items?: T[];
-      data?: T[];
-      total?: number;
-    };
+    items?: T[];
+    data?: T[];
+    total?: number;
+  };
 
 function normalizeList<T>(response: unknown): T[] {
   if (Array.isArray(response)) {
@@ -124,7 +124,8 @@ function priorityClass(priority: Investigation["priority"]): string {
   }
 }
 
-function eventTypeLabel(value: string): string {
+function eventTypeLabel(value: string | null | undefined): string {
+  if (!value) return "Unknown event";
   return value
     .replaceAll("_", " ")
     .replace(/\b\w/g, (character) => character.toUpperCase());
@@ -235,7 +236,24 @@ export default function InvestigationDetailPage({
         ),
       ]);
 
-      setInvestigation(investigationResponse);
+      const responseData =
+        investigationResponse &&
+          typeof investigationResponse === "object" &&
+          "data" in investigationResponse
+          ? investigationResponse.data
+          : investigationResponse;
+
+      if (
+        !responseData ||
+        typeof responseData !== "object" ||
+        !("id" in responseData) ||
+        !("status" in responseData) ||
+        !("title" in responseData)
+      ) {
+        throw new Error("Invalid investigation response from API.");
+      }
+
+      setInvestigation(responseData as Investigation);
       setAlerts(normalizeList<InvestigationAlert>(alertsResponse));
 
       setEvents(
@@ -729,7 +747,7 @@ export default function InvestigationDetailPage({
                         </strong>
 
                         {mapping.confidence !== null &&
-                        mapping.confidence !== undefined ? (
+                          mapping.confidence !== undefined ? (
                           <small>
                             Confidence {mapping.confidence}%
                           </small>
@@ -821,7 +839,7 @@ export default function InvestigationDetailPage({
                     <div className="investigation-note-meta">
                       <UserRound size={12} />
                       {note.author_id ?? "Unknown analyst"}
-                      <span>•</span>
+                      <span>â€¢</span>
                       {formatDate(note.created_at)}
                     </div>
                   </article>
@@ -863,7 +881,7 @@ export default function InvestigationDetailPage({
                       </strong>
 
                       <span>
-                        {item.source_type} ·{" "}
+                        {item.source_type} Â·{" "}
                         {formatShortId(item.source_id)}
                       </span>
 
